@@ -174,12 +174,18 @@ def main_worker(gpu, ngpus_per_node, args):
 
     cudnn.benchmark = True
 
+    #get names of parameters
+    parameterNames = []
+    for name , key in model.named_parameters():
+        parameterNames.append ( name )
+
+
     if args.quantize:
         optimizer = inq.SGD(model.parameters(), args.lr,
                             momentum=args.momentum,
                             weight_decay=args.weight_decay,
-                            weight_bits=args.weight_bits
-                            )
+                            weight_bits=args.weight_bits ,
+                            parameterNames=parameterNames )
 
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[2])
 

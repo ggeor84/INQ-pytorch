@@ -98,8 +98,11 @@ class INQScheduler(object):
         """Performs weight partitioning and quantization
         """
         for group in self.optimizer.param_groups:
+            parameterNames = group['parameterNames']
             for idx, p in enumerate(group['params']):
                 if p.requires_grad is False:
+                    continue                
+                if 'bn' in parameterNames [ idx ] or 'bias' in parameterNames [ idx ]:                   
                     continue
                 if self.strategy == "random":
                     if self.idx == 0:
